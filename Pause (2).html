@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pause</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0b;--panel:#151314;--panel2:#1e1a1b;--line:#2d2527;--red:#e4202f;--red2:#ff5260;--wine:#3a0a10;--txt:#f6efef;--dim:#a2979a;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+html,body{height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--txt);font-family:'Sora',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+body{background:radial-gradient(900px 500px at 50% -10%,#3a0a10 0%,transparent 70%),radial-gradient(600px 400px at 100% 110%,#2a070c 0%,transparent 70%),var(--bg)}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible,input:focus-visible,.chip:focus-visible{outline:2px solid var(--red2);outline-offset:2px}
+h1,h2,h3,p{margin:0}
+.view{display:none;height:100%;flex-direction:column;padding:clamp(14px,3vh,28px) clamp(14px,3vw,40px)}
+.view.on{display:flex}
+.logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:20px;letter-spacing:-.02em}
+.bars{display:inline-flex;gap:4px}.bars i{width:6px;height:18px;border-radius:2px;background:var(--red)}
+/* home */
+.center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(10px,2.2vh,20px);text-align:center;min-height:0}
+.avatar{width:clamp(92px,16vh,128px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-size:clamp(38px,7vh,54px);font-weight:800;background:radial-gradient(circle at 30% 25%,#ff5260,#9d0f1c 70%);box-shadow:0 0 0 6px var(--bg),0 0 0 9px var(--red),0 20px 60px rgba(228,32,47,.35)}
+.center h1{font-size:clamp(26px,4.6vh,38px);font-weight:800;letter-spacing:-.03em}
+.meta{color:var(--dim);font-size:14px}
+.xpbar{width:200px;height:6px;border-radius:9px;background:var(--panel2);overflow:hidden}.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--red),var(--red2));border-radius:9px;transition:width .4s}
+.duo{display:flex;gap:16px;width:min(760px,100%);margin-top:clamp(6px,2vh,18px)}
+.big{flex:1;text-align:left;padding:clamp(16px,3vh,26px);border-radius:22px;background:linear-gradient(160deg,#241214,#121011);border:1px solid #4a1b21;display:flex;flex-direction:column;gap:6px;transition:transform .15s,box-shadow .15s,border-color .15s}
+.big:hover{transform:translateY(-3px);border-color:var(--red);box-shadow:0 14px 40px rgba(228,32,47,.25)}
+.big .t{font-size:clamp(18px,3vh,22px);font-weight:800;letter-spacing:-.02em}.big .s{color:var(--dim);font-size:14px;line-height:1.45}
+.big.red{background:linear-gradient(160deg,#c91524,#6e0b15);border-color:#ff5260}.big.red .s{color:#ffd9dc}
+/* sections */
+.top{display:flex;align-items:center;gap:14px;margin-bottom:clamp(10px,2vh,18px)}
+.top .ttl{flex:1;min-width:0}.top h2{font-size:clamp(20px,3.4vh,28px);font-weight:800;letter-spacing:-.03em}.top p{color:var(--dim);font-size:13px;margin-top:2px}
+.back{padding:9px 14px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);font-size:13px;font-weight:600}.back:hover{border-color:var(--red)}
+.pill{padding:8px 14px;border-radius:99px;background:var(--wine);border:1px solid #6a1620;font-weight:700;font-size:13px;white-space:nowrap}
+.body{flex:1;min-height:0;overflow:auto;scrollbar-width:none}.body::-webkit-scrollbar{display:none}
+.grid{display:grid;gap:14px;height:100%}
+.g2{grid-template-columns:1.15fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}
+.col{display:flex;flex-direction:column;gap:14px;min-height:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px;min-height:0}
+.card h3{font-size:16px;font-weight:700;letter-spacing:-.01em}.card .sm{font-size:12.5px;color:var(--dim);line-height:1.5}
+.grow{flex:1}
+.btn{padding:10px 16px;border-radius:12px;font-weight:700;font-size:13.5px;background:linear-gradient(180deg,var(--red2),var(--red));color:#fff;box-shadow:0 6px 18px rgba(228,32,47,.3)}
+.btn:hover{filter:brightness(1.08)}.btn.ghost{background:var(--panel2);box-shadow:none;border:1px solid var(--line)}
+.tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{padding:7px 13px;border-radius:99px;border:1px solid var(--line);background:transparent;font-size:12.5px;color:var(--dim);cursor:pointer;user-select:none}
+.chip:hover{border-color:var(--red)}.chip.on{background:var(--red);border-color:var(--red);color:#fff;font-weight:600}
+.bar{height:8px;border-radius:9px;background:var(--panel2);overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--red),var(--red2));border-radius:9px}
+/* puzzle */
+.seq{display:flex;gap:8px;flex-wrap:wrap}.seq b{min-width:54px;padding:14px 10px;text-align:center;border-radius:14px;background:var(--panel2);border:1px solid var(--line);font-size:20px}.seq b.q{background:var(--wine);border-color:var(--red);color:var(--red2)}
+.opts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.opt{padding:14px 6px;border-radius:14px;background:var(--panel2);border:1px solid var(--line);font-size:18px;font-weight:700}.opt:hover{border-color:var(--red);background:var(--wine)}
+.msg{min-height:18px;font-size:13px;color:var(--red2);font-weight:600}
+.badges{display:flex;gap:8px}.bdg{flex:1;text-align:center;padding:9px 2px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);opacity:.4;font-size:11px}.bdg b{display:block;font-size:20px;color:var(--red2)}.bdg.on{opacity:1;border-color:var(--red);background:var(--wine)}
+.row{display:flex;align-items:center;gap:12px;padding:7px 0;border-top:1px solid var(--line)}.row:first-of-type{border-top:0}
+.rk{width:16px;color:var(--dim);font-size:13px}.av{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:13px;background:linear-gradient(160deg,var(--red2),#9d0f1c)}
+.row .nm{flex:1;font-size:14px}.row .xp{font-weight:700;font-size:13px}.row.me{color:var(--red2);font-weight:700}
+/* control */
+.step{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}.step:first-of-type{border-top:0}
+.step .nm{flex:1;font-size:14px}.sq{width:30px;height:30px;border-radius:9px;background:var(--panel2);border:1px solid var(--line);font-weight:700}.sq:hover{border-color:var(--red)}
+.sw{width:46px;height:26px;border-radius:99px;background:var(--panel2);border:1px solid var(--line);position:relative}.sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--dim);transition:.2s}.sw.on{background:var(--red);border-color:var(--red)}.sw.on::after{left:23px;background:#fff}
+input[type=range]{width:100%;accent-color:var(--red)}
+input[type=text]{width:100%;padding:11px 13px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);font:inherit;font-size:14px}
+.hab{display:flex;align-items:center;gap:12px;padding:8px 0;border-top:1px solid var(--line)}.hab:first-of-type{border-top:0}
+.ck{width:26px;height:26px;border-radius:8px;border:2px solid var(--line);display:grid;place-items:center;font-size:15px;color:#fff;flex:none}.ck.on{background:var(--red);border-color:var(--red)}
+.hab .nm{flex:1;font-size:14px;font-weight:600}.hab .nm small{display:block;color:var(--dim);font-weight:400;font-size:12px}
+.dots{display:flex;gap:4px}.dots i{width:9px;height:9px;border-radius:50%;background:var(--panel2);border:1px solid var(--line)}.dots i.on{background:var(--red);border-color:var(--red)}
+.chart{position:relative;flex:1;min-height:90px;display:flex;align-items:flex-end;gap:10px}.chart .c{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end}.chart .c i{width:100%;border-radius:8px 8px 3px 3px;background:#5b2128;min-height:3px}.chart .c.over i{background:linear-gradient(180deg,var(--red2),var(--red))}.chart .c span{font-size:11px;color:var(--dim)}
+.ideas{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1}
+.idea{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px;justify-content:space-between}.idea small{color:var(--red2);font-size:12px}.idea p{font-size:14.5px;font-weight:600;line-height:1.35}.idea .btn{align-self:flex-start;padding:8px 14px}
+.surp{display:flex;align-items:center;gap:14px;justify-content:space-between}
+/* onboarding */
+.ov{position:fixed;inset:0;z-index:20;display:none;place-items:center;background:rgba(6,4,4,.82);backdrop-filter:blur(8px);padding:12px}.ov.on{display:grid}
+.modal{width:min(520px,100%);max-height:100%;overflow:auto;scrollbar-width:none;background:linear-gradient(170deg,#1f1214,#0f0d0d);border:1px solid #5a1a22;border-radius:24px;padding:clamp(16px,3vh,28px);display:flex;flex-direction:column;gap:11px;box-shadow:0 30px 90px rgba(228,32,47,.25)}
+.modal h2{font-size:clamp(20px,3.4vh,26px);font-weight:800;letter-spacing:-.03em}.modal label{font-size:13px;font-weight:600;color:var(--dim)}.modal label b{color:var(--red2)}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);opacity:0;pointer-events:none;background:var(--red);color:#fff;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:99px;transition:.25s;z-index:30;box-shadow:0 10px 30px rgba(228,32,47,.4)}#toast.on{opacity:1;transform:translate(-50%,0)}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}.shake{animation:shake .25s}
+@media (max-width:760px){.duo{flex-direction:column}.g2,.g3{grid-template-columns:1fr;height:auto}.ideas{grid-template-columns:1fr}.top p{display:none}}
+
+/* home guide */
+#home{overflow-y:auto;scrollbar-width:thin;scrollbar-color:#3a2f31 transparent}
+#home .center{flex:none;min-height:calc(100vh - 120px);min-height:calc(100dvh - 120px)}
+.cue{margin-top:4px;padding:9px 16px;font-weight:600}
+.cue:hover{color:var(--txt)}
+.guide{width:min(960px,100%);margin:0 auto;padding:clamp(28px,6vh,56px) 0 36px;display:flex;flex-direction:column;gap:16px}
+.guide>h2{font-size:clamp(22px,3.6vh,30px);font-weight:800;letter-spacing:-.03em}
+.guide>.lead{color:var(--dim);font-size:14px;line-height:1.5;margin-top:-8px}
+.gg{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.guide .card{height:auto}
+details{border-top:1px solid var(--line);padding:10px 0}details:first-of-type{border-top:0}
+summary{cursor:pointer;font-weight:700;font-size:14px;list-style:none}summary::-webkit-details-marker{display:none}
+details[open] summary{color:var(--red2)}details p{margin-top:6px}
+summary:focus-visible{outline:2px solid var(--red2);outline-offset:3px;border-radius:6px}
+.vid{border-radius:20px;overflow:hidden;background:#120c0d;border:1px solid #4a1b21}
+.vs{position:relative;height:clamp(200px,30vh,250px);display:grid;place-items:center;text-align:center;background:radial-gradient(380px 200px at 50% 0,#4a0e16,transparent 70%),#120c0d;overflow:hidden}
+.sc{display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;max-width:440px;padding:0 16px}
+.sc h2{margin:0;font-size:24px;font-weight:800;letter-spacing:-.03em;animation:up .6s both}.sc p{margin:0;font-size:13px;color:var(--dim);animation:up .6s .3s both}
+.poster *{animation:none!important}
+.vcap{padding:10px 16px 0;font-size:13.5px;font-weight:700}
+.vbar{display:flex;align-items:center;gap:10px;padding:9px 14px 13px}.vbar button{font-size:13px;width:32px;height:32px;border-radius:50%;background:var(--red);flex:none}
+.vtrack{flex:1;height:8px;border-radius:9px;background:var(--panel2);cursor:pointer}.vtrack i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--red),var(--red2))}
+.vbar span{font-size:12px;color:var(--dim);min-width:32px;text-align:right}
+.vseq{display:flex;gap:6px}.vseq b{display:grid;place-items:center;width:46px;height:46px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);font-size:18px;animation:pop .4s both}.vseq b.q{background:var(--wine);border-color:var(--red)}.vseq u{grid-area:1/1;text-decoration:none}.vseq .a{color:var(--red2);animation:swapA 2.4s both}.vseq .b{color:var(--red2);font-weight:800;animation:swapB 2.4s both}
+.vxp{color:var(--red2);font-weight:800;font-size:15px}
+.vrow{display:flex;align-items:center;gap:10px;width:100%;font-size:13px;text-align:left;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:7px 10px;animation:up .4s both}.vrow b{margin-left:auto;color:var(--red2)}
+@keyframes up{from{opacity:0;transform:translateY(10px)}}
+@keyframes pop{from{opacity:0;transform:scale(.4)}60%{transform:scale(1.15)}}
+@keyframes grow{from{width:0}}
+@keyframes swapA{0%,45%{opacity:1}55%,100%{opacity:0}}
+@keyframes swapB{0%,45%{opacity:0}55%,100%{opacity:1}}
+@keyframes flt{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(-4px)}}
+.vid.paused *{animation-play-state:paused!important}
+@media (max-width:760px){.gg{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div id="ob" class="ov">
+  <div class="modal">
+    <div class="logo"><span class="bars"><i></i><i></i></span>Pause</div>
+    <h2>Set up your space</h2>
+    <p class="sm" style="color:var(--dim);font-size:13px">Tell us what you want from Pause. You can start in under a minute.</p>
+    <label for="f-name">Your name</label>
+    <input type="text" id="f-name" maxlength="18" placeholder="e.g. Ayesha" autocomplete="off">
+    <label>Main goal</label>
+    <div class="chips" id="f-goal" data-single>
+      <span class="chip on" tabindex="0" data-v="Focus better">Focus better</span><span class="chip" tabindex="0" data-v="Scroll less">Scroll less</span><span class="chip" tabindex="0" data-v="Sleep better">Sleep better</span><span class="chip" tabindex="0" data-v="Study more">Study more</span>
+    </div>
+    <label for="f-lim">Daily screen-time goal: <b id="f-lim-v">120 min</b></label>
+    <input type="range" id="f-lim" min="30" max="300" step="15" value="120">
+    <label>Interests</label>
+    <div class="chips" id="f-int">
+      <span class="chip on" tabindex="0" data-v="Puzzles">Puzzles</span><span class="chip" tabindex="0" data-v="Creative">Creative</span><span class="chip" tabindex="0" data-v="Active">Active</span><span class="chip" tabindex="0" data-v="Social">Social</span><span class="chip" tabindex="0" data-v="Learn">Learn</span><span class="chip" tabindex="0" data-v="Calm">Calm</span>
+    </div>
+    <p class="msg" id="f-err"></p>
+    <button class="btn" id="f-go">Create my account</button>
+  </div>
+</div>
+
+<section id="home" class="view on">
+  <div class="logo"><span class="bars"><i></i><i></i></span>Pause</div>
+  <div class="center">
+    <div class="avatar" id="hav">P</div>
+    <h1 id="hn">Welcome</h1>
+    <div class="meta" id="hm"></div>
+    <div class="xpbar"><i id="hx"></i></div>
+    <div class="duo">
+      <button class="big red" data-go="puz"><span class="t">🧩 Brain Puzzles</span><span class="s">Levels, rewards and friendly competitions</span></button>
+      <button class="big" data-go="dc"><span class="t">🎛️ Digital Control</span><span class="s">Usage goals, app limits and focus reminders</span></button>
+    </div>
+    <button class="chip cue" data-scroll="#guide">📖 How to use Pause · scroll for the guide ↓</button>
+  </div>
+
+  <div class="guide" id="guide">
+    <h2>📖 How to use Pause</h2>
+    <p class="lead">Watch the 20-second tour, then tap any topic below to see what it does and how to use it.</p>
+    <div class="vid" id="vid"><div class="vs" id="vs"><div class="sc poster"><div class="bars" style="transform:scale(2.2);margin-bottom:10px"><i></i><i></i></div><h2>Meet Pause</h2><p>Play, focus and build better habits</p></div></div><div class="vcap" id="vcap">Tour · 20 seconds</div><div class="vbar"><button data-act="vplay" id="vp" aria-label="Play or pause the tour">▶</button><div class="vtrack" id="vtrack" data-act="vseek"><i id="vfill"></i></div><span id="vt">0:00</span></div></div>
+    <div class="gg">
+      <div class="card" id="hguide"><h3>🏠 Home page user guide</h3><p class="sm">Tap a topic to see what it does and how to use it.</p><div>
+        <details open><summary>🙂 Your avatar and name</summary><p class="sm">The circle shows the first letter of your name, with your name beneath it. You enter your name once, when you first set up your account.</p></details>
+        <details><summary>📈 Level, XP and goal</summary><p class="sm">The line under your name shows your level, your total XP and your main goal. Earn XP by solving puzzles (+10), ticking habits (+5) and finishing offline ideas (+20).</p></details>
+        <details><summary>📊 The XP bar</summary><p class="sm">The red bar shows how close you are to the next level. It fills as you earn XP, and every 50 XP gives you a new level.</p></details>
+        <details><summary>🧩 Brain Puzzles button</summary><p class="sm">Opens pattern puzzles, reward badges and the friends leaderboard. Use it when you want a quick, fun challenge.</p></details>
+        <details><summary>🎛️ Digital Control button</summary><p class="sm">Opens your screen-time tools: daily goal, app limits and focus reminders, plus habit building and offline ideas. Use it when you want to cut back on scrolling.</p></details>
+        <details><summary>✨ First-time setup</summary><p class="sm">On your first visit you pick a name, a main goal, a daily screen-time goal and your interests. Tap Create my account to start. Your details are saved on your device, so you will not be asked again.</p></details>
+      </div></div>
+      <div class="card" id="pguide"><h3>🧭 Using the other pages</h3><p class="sm">What to do inside Brain Puzzles and Digital Control.</p><div>
+        <details><summary>🧠 Solve a puzzle</summary><p class="sm">Find the number that continues the pattern, then tap your answer. Each correct answer earns 10 XP.</p></details>
+        <details><summary>🏆 Earn rewards</summary><p class="sm">Badges unlock as your XP grows, and every 50 XP is a new level. Puzzles get harder as you level up.</p></details>
+        <details><summary>👥 Compete with friends</summary><p class="sm">See where you rank against your friends. Solve more puzzles to climb the leaderboard.</p></details>
+        <details><summary>🎯 Set a daily goal</summary><p class="sm">Drag the slider to choose how many minutes a day you want to stay under.</p></details>
+        <details><summary>⏳ Limit single apps</summary><p class="sm">Tap − or + to set a time limit for each app that eats your day.</p></details>
+        <details><summary>🔔 Get focus reminders</summary><p class="sm">Turn on reminders and pick how often. A gentle nudge tells you to look away and rest.</p></details>
+        <details><summary>✅ Build habits</summary><p class="sm">Tick a habit when you finish it to earn 5 XP. The dots show your streak. You can also add your own habit.</p></details>
+        <details><summary>🌿 Do something offline</summary><p class="sm">Swap a scroll for something real. Tap Mark as done on an idea to earn 20 XP, or ask for a surprise.</p></details>
+      </div></div>
+    </div>
+    <div style="text-align:center"><button class="chip cue" data-scroll="top">↑ Back to top</button></div>
+  </div>
+</section>
+
+<section id="puz" class="view">
+  <div class="top"><button class="back" data-go="home">Back</button><div class="ttl"><h2>🧩 Brain Puzzles</h2><p>Levels, rewards and friendly competitions</p></div><div class="pill xpp"></div></div>
+  <div class="body" id="puz-b"></div>
+</section>
+
+<section id="dc" class="view">
+  <div class="top"><button class="back" data-go="home">Back</button><div class="ttl"><h2>🎛️ Digital Control</h2><p>Usage goals, app limits and focus reminders</p></div><div class="pill xpp"></div></div>
+  <div class="tabs" id="dc-tabs">
+    <span class="chip on" tabindex="0" data-tab="ctl">🎯 Goals and limits</span><span class="chip" tabindex="0" data-tab="hab">🌱 Habit building</span><span class="chip" tabindex="0" data-tab="off">🌿 Offline engagement</span>
+  </div>
+  <div class="body" id="dc-b"></div>
+</section>
+
+<div id="toast" role="status"></div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const KEY='pause_v1';
+let S={name:'',goal:'Focus better',limit:120,interests:[],xp:10,
+ habits:[{n:'Phone-free study hour',d:0,done:false},{n:'No scrolling before bed',d:0,done:false},{n:'Drink 6 glasses of water',d:0,done:false}],
+ apps:[{n:'Instagram',m:30},{n:'TikTok',m:20},{n:'YouTube',m:45},{n:'WhatsApp',m:40}],
+ remind:false,every:45,doneIdeas:[]};
+let tab='ctl',cat='All',pz=null,idea='',timer=null,msg='';
+const WEEK=[120,128,128,150,148,152,2],DAYS=['T','W','T','F','S','S','M'];
+const IDEAS=[['Creative','Sketch your room for 15 minutes'],['Creative','Write a short story in 10 lines'],['Creative','Learn a simple song on an instrument'],['Active','Go for a 20-minute walk outside'],['Active','Try a 10-minute home workout'],['Active','Play a sport with friends'],['Social','Call a friend instead of texting'],['Social','Cook a meal with your family'],['Learn','Read 10 pages of a book'],['Learn','Learn five words in a new language'],['Calm','Do 5 minutes of deep breathing'],['Calm','Tidy your desk and water a plant']];
+const FRIENDS=[['Amna',410],['Bilal',320],['Sara',260],['Hamza',150]];
+const BADGES=[[10,'★','First spark'],[50,'◆','Climber'],[150,'●','Sharp mind'],[300,'▲','Strategist'],[500,'♛','Legend']];
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const lvl=()=>Math.floor(S.xp/50)+1;
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),2300)}
+function addXP(n){S.xp=Math.max(0,S.xp+n);save();paint()}
+function paint(){
+  $('#hav').textContent=(S.name[0]||'P').toUpperCase();$('#hn').textContent=S.name||'Welcome';
+  $('#hm').textContent='Level '+lvl()+' · '+S.xp+' XP · '+S.goal;
+  $('#hx').style.width=(S.xp%50)*2+'%';
+  $$('.xpp').forEach(e=>e.textContent='Level '+lvl()+' · '+S.xp+' XP');
+}
+function show(v){$$('.view').forEach(e=>e.classList.toggle('on',e.id===v));if(v==='puz'){if(!pz)newPz();renderPuz()}if(v==='dc')renderDC();paint()}
+/* puzzles */
+function newPz(){
+  const r=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),L=lvl();let seq;
+  if(L<3){const a=r(1,9),d=r(2,3+L);seq=[0,1,2,3,4].map(i=>a+d*i)}
+  else if(L<5){const a=r(1,4);seq=[0,1,2,3,4].map(i=>(i+a)*(i+a))}
+  else{const a=r(1,5),m=r(2,3);seq=[0,1,2,3,4].map(i=>a*Math.pow(m,i))}
+  const ans=seq[4],set=new Set([ans]);
+  while(set.size<4){const x=ans+r(-8,8);if(x>0)set.add(x)}
+  pz={seq:seq.slice(0,4),ans,opts:[...set].sort(()=>Math.random()-.5)};msg='';
+}
+function renderPuz(){
+  const lb=[...FRIENDS,[ 'You',S.xp]].sort((a,b)=>b[1]-a[1]);
+  $('#puz-b').innerHTML=`<div class="grid g2">
+  <div class="card"><h3>🧠 Level ${lvl()} puzzle</h3><p class="sm">Find the number that continues the pattern. Each correct answer earns 10 XP.</p>
+   <div class="bar"><i style="width:${(S.xp%50)*2}%"></i></div><p class="sm">${50-S.xp%50} XP to level ${lvl()+1}</p>
+   <div class="grow" style="display:flex;flex-direction:column;justify-content:center;gap:18px">
+    <div class="seq">${pz.seq.map(n=>`<b>${n}</b>`).join('')}<b class="q">?</b></div>
+    <div class="opts">${pz.opts.map(o=>`<button class="opt" data-act="opt" data-v="${o}">${o}</button>`).join('')}</div>
+    <p class="msg" id="pm">${msg}</p></div></div>
+  <div class="col">
+   <div class="card"><h3>🏆 Rewards</h3><div class="badges">${BADGES.map(b=>`<div class="bdg ${S.xp>=b[0]?'on':''}"><b>${b[1]}</b>${b[2]}<br>${b[0]} XP</div>`).join('')}</div></div>
+   <div class="card grow"><h3>👥 Friends leaderboard</h3><div>${lb.map((f,i)=>`<div class="row ${f[0]==='You'?'me':''}"><span class="rk">${i+1}</span><span class="av">${f[0][0]}</span><span class="nm">${f[0]}</span><span class="xp">${f[1]} XP</span></div>`).join('')}</div></div>
+  </div></div>`;
+}
+/* digital control */
+function renderDC(){
+  $$('#dc-tabs .chip').forEach(c=>c.classList.toggle('on',c.dataset.tab===tab));
+  const b=$('#dc-b'),avg=Math.round(WEEK.slice(0,6).reduce((a,c)=>a+c,0)/6),tgt=Math.round(avg*.9);
+  if(tab==='ctl'){
+    const over=avg-S.limit;
+    b.innerHTML=`<div class="grid g3">
+    <div class="card"><h3>🎯 Usage goal</h3><p class="sm">Set the daily screen time you want to stay under.</p>
+     <div style="font-size:34px;font-weight:800;letter-spacing:-.03em">${S.limit} <span style="font-size:15px;color:var(--dim);font-weight:600">min/day</span></div>
+     <input type="range" id="lim" min="30" max="300" step="15" value="${S.limit}" aria-label="Daily goal">
+     <div class="bar"><i style="width:${Math.min(100,S.limit/avg*100)}%"></i></div>
+     <p class="sm">${over>0?`Your 6-day average is ${avg} min, ${over} min over this goal.`:`Your 6-day average is ${avg} min, within this goal.`}</p></div>
+    <div class="card"><h3>⏳ App limits</h3><div>${S.apps.map((a,i)=>`<div class="step"><span class="nm">${a.n}</span><button class="sq" data-act="app" data-i="${i}" data-d="-5" aria-label="Less">−</button><b style="min-width:52px;text-align:center;font-size:13px">${a.m} min</b><button class="sq" data-act="app" data-i="${i}" data-d="5" aria-label="More">+</button></div>`).join('')}</div></div>
+    <div class="card"><h3>🔔 Focus reminders</h3><p class="sm">A gentle nudge to look away and take a break.</p>
+     <div class="step" style="border:0"><span class="nm">Remind me</span><button class="sw ${S.remind?'on':''}" data-act="rem" aria-label="Toggle reminders"></button></div>
+     <div class="chips">${[25,45,60].map(m=>`<span class="chip ${S.every===m?'on':''}" tabindex="0" data-act="every" data-v="${m}">Every ${m} min</span>`).join('')}</div>
+     <div class="grow"></div><button class="btn ghost" data-act="test">Send a test reminder</button></div></div>`;
+  }else if(tab==='hab'){
+    const mx=Math.max(160,S.limit+10);
+    b.innerHTML=`<div class="grid g2">
+    <div class="col"><div class="card grow"><h3>✅ Today’s habits</h3><p class="sm">Small, steady steps beat big resolutions. Tick a habit to earn 5 XP.</p>
+      <div>${S.habits.map((h,i)=>`<div class="hab"><button class="ck ${h.done?'on':''}" data-act="hab" data-i="${i}" aria-label="Mark ${esc(h.n)}">${h.done?'✓':''}</button><span class="nm">${esc(h.n)}<small>${h.d}-day streak</small></span><span class="dots">${[0,1,2,3,4,5,6].map(k=>`<i class="${k<h.d?'on':''}"></i>`).join('')}</span></div>`).join('')}</div>
+      <div style="display:flex;gap:8px;margin-top:auto"><input type="text" id="nh" maxlength="34" placeholder="Add a habit, e.g. Read 10 pages"><button class="btn" data-act="addhab">Add</button></div></div></div>
+    <div class="col">
+     <div class="card grow"><h3>📊 Last 7 days of screen time</h3>
+      <div class="chart">${WEEK.map((v,i)=>`<div class="c ${v>S.limit?'over':''}"><i style="height:${v/mx*100}%"></i><span>${DAYS[i]}</span></div>`).join('')}</div>
+      <p class="sm">Past average: ${avg} min/day. Bright red bars went over your ${S.limit} min goal.</p></div>
+     <div class="card"><h3>📉 Gradual plan</h3><p class="sm">Cut about 10% each week. This week’s target: ${tgt} min/day (from ${avg}).</p>
+      <div class="bar"><i style="width:${Math.min(100,WEEK[6]/tgt*100)}%"></i></div><p class="sm">${WEEK[6]<=tgt?'You are on target today.':'You are over today’s target.'}</p></div>
+    </div></div>`;
+  }else{
+    const list=IDEAS.map((x,i)=>[...x,i]).filter(x=>!S.doneIdeas.includes(x[2])&&(cat==='All'||x[0]===cat)).slice(0,4);
+    b.innerHTML=`<div class="card" style="height:100%"><h3>🌿 Offline engagement</h3><p class="sm">Swap a scroll for something real. Pick a hobby and mark it done to earn 20 XP.</p>
+     <div class="chips">${['All','Creative','Active','Social','Learn','Calm'].map(c=>`<span class="chip ${cat===c?'on':''}" tabindex="0" data-act="cat" data-v="${c}">${c}</span>`).join('')}</div>
+     <div class="card surp" style="flex-direction:row;background:var(--panel2)"><div><h3>🎲 Surprise me</h3><p class="sm">${esc(idea)||'Tap the button for an idea.'}</p></div><button class="btn" data-act="surp">New idea</button></div>
+     <div class="ideas">${list.length?list.map(x=>`<div class="idea"><div><small>${x[0]}</small><p>${x[1]}</p></div><button class="btn" data-act="done" data-i="${x[2]}">Mark as done</button></div>`).join(''):'<p class="sm">Everything in this category is done. Pick another one.</p>'}</div></div>`;
+  }
+}
+/* events */
+document.addEventListener('click',e=>{
+  const sc=e.target.closest('[data-scroll]');if(sc){const h=$('#home');if(sc.dataset.scroll==='top')h.scrollTo({top:0,behavior:'smooth'});else $(sc.dataset.scroll).scrollIntoView({behavior:'smooth',block:'start'});return}
+  const g=e.target.closest('[data-go]');if(g){show(g.dataset.go);return}
+  const t=e.target.closest('[data-tab]');if(t){tab=t.dataset.tab;renderDC();return}
+  const a=e.target.closest('[data-act]');if(!a)return;const i=+a.dataset.i,v=a.dataset.v;
+  switch(a.dataset.act){
+   case'vplay':vid.started=true;if(vid.end){vid.t=0;vid.end=false;vid.sc=-1;vid.play=true}else vid.play=!vid.play;updVid();break;
+   case'vseek':{const b=a.getBoundingClientRect();vid.started=true;vid.t=Math.max(0,Math.min(VD*VN-1,(e.clientX-b.left)/b.width*VD*VN));vid.end=false;vid.sc=-1;updVid();break}
+   case'opt':if(+v===pz.ans){addXP(10);toast('Correct! +10 XP');newPz();msg='';renderPuz()}else{msg='Not quite. Look at the gap between numbers and try again.';renderPuz();$('#pz-s')||a.classList;$('.seq')?.classList.add('shake')}break;
+   case'app':S.apps[i].m=Math.max(5,S.apps[i].m+ +a.dataset.d);save();renderDC();break;
+   case'rem':S.remind=!S.remind;save();setReminder();renderDC();break;
+   case'every':S.every=+v;save();setReminder();renderDC();break;
+   case'test':toast('Time for a pause. Look away from the screen for 20 seconds.');break;
+   case'hab':{const h=S.habits[i];h.done=!h.done;h.d=Math.max(0,Math.min(7,h.d+(h.done?1:-1)));save();addXP(h.done?5:-5);renderDC();break}
+   case'addhab':{const el=$('#nh'),n=el.value.trim();if(n){S.habits.push({n,d:0,done:false});save();renderDC()}else toast('Type a habit name first.');break}
+   case'cat':cat=v;renderDC();break;
+   case'surp':{const left=IDEAS.filter((x,k)=>!S.doneIdeas.includes(k));idea=left.length?left[Math.floor(Math.random()*left.length)][1]:'You finished every idea!';renderDC();break}
+   case'done':S.doneIdeas.push(i);save();addXP(20);toast('Nice! +20 XP');renderDC();break;
+  }
+});
+document.addEventListener('input',e=>{
+  if(e.target.id==='lim'){S.limit=+e.target.value;save();const p=e.target.closest('.card');p.querySelector('div').firstChild.textContent=S.limit+' '}
+});
+document.addEventListener('change',e=>{if(e.target.id==='lim')renderDC()});
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.classList?.contains('chip')){e.preventDefault();e.target.click()}});
+function setReminder(){clearInterval(timer);if(S.remind)timer=setInterval(()=>toast('Time for a pause. Look away from the screen for 20 seconds.'),S.every*60000)}
+/* explainer video */
+const VD=4000,VN=5,VC=['Welcome to Pause','Solve puzzles, earn XP','Level up and win badges','Set limits and reminders','Build habits, go offline'];
+const vid={t:0,last:0,sc:-1,end:false,play:false,started:false};
+const SCN=[
+ `<div class="sc"><div class="bars" style="transform:scale(2.2);margin-bottom:10px;animation:pop .6s both"><i></i><i></i></div><h2>Meet Pause</h2><p>Play, focus and build better habits</p></div>`,
+ `<div class="sc"><div class="vseq"><b>3</b><b style="animation-delay:.2s">6</b><b style="animation-delay:.4s">9</b><b style="animation-delay:.6s">12</b><b class="q" style="animation-delay:.8s"><u class="a">?</u><u class="b">15</u></b></div><p style="animation-delay:1s">Spot the pattern. Add 3 each time.</p><div class="vxp" style="animation:flt 1s 2.4s both">+10 XP ✨</div></div>`,
+ `<div class="sc"><h2 style="font-size:20px">🏆 Level 2 unlocked</h2><div class="xpbar" style="width:220px"><i style="width:100%;animation:grow 2s both"></i></div><div class="badges" style="width:92%;margin-top:6px"><div class="bdg on" style="animation:pop .4s 1.2s both"><b>★</b>Spark</div><div class="bdg on" style="animation:pop .4s 1.8s both"><b>◆</b>Climber</div><div class="bdg" style="animation:pop .4s 2.4s both"><b>●</b>Sharp</div></div></div>`,
+ `<div class="sc"><div class="vrow"><span>🎯 Daily goal</span><div class="xpbar" style="width:90px;margin-left:auto"><i style="width:70%;animation:grow 2s both"></i></div></div><div class="vrow" style="animation-delay:.5s"><span>⏳ Instagram</span><b>30 min</b></div><span class="chip on" style="animation:pop .4s 2.2s both">🔔 Reminders on</span></div>`,
+ `<div class="sc"><div class="vrow"><span class="ck on" style="animation:pop .4s .6s both">✓</span>Phone-free study hour<b style="animation:up .4s .9s both">+5 XP</b></div><div class="vrow" style="animation-delay:.3s"><span class="ck on" style="animation:pop .4s 1.4s both">✓</span>No scrolling before bed<b style="animation:up .4s 1.7s both">+5 XP</b></div><span class="chip on" style="animation:pop .4s 2.5s both">🌿 Walk outside · +20 XP</span></div>`];
+function updVid(){const v=$('#vid');if(!v)return;
+ if(vid.started){const k=Math.min(VN-1,Math.floor(vid.t/VD));
+  if(k!==vid.sc){vid.sc=k;$('#vs').innerHTML=SCN[k];$('#vcap').textContent=(k+1)+'/'+VN+'  '+VC[k]}
+  $('#vfill').style.width=vid.t/(VD*VN)*100+'%';
+  $('#vt').textContent='0:'+String(Math.floor(vid.t/1000)).padStart(2,'0')}
+ v.classList.toggle('paused',!vid.play);$('#vp').textContent=vid.end?'↻':vid.play?'⏸':'▶'}
+function vtick(ts){const d=ts-vid.last;vid.last=ts;if(vid.play&&d<200){vid.t+=d;if(vid.t>=VD*VN){vid.t=VD*VN-1;vid.play=false;vid.end=true}}updVid();requestAnimationFrame(vtick)}
+requestAnimationFrame(vtick);
+if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion:reduce)').matches){
+ new IntersectionObserver(([en])=>{if(en.isIntersecting){if(!vid.end){vid.started=true;vid.play=true}}else vid.play=false},{threshold:.6}).observe($('#vid'))}
+/* onboarding */
+$$('#ob .chips').forEach(box=>box.addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;if(box.hasAttribute('data-single'))box.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));c.classList.toggle('on',box.hasAttribute('data-single')||!c.classList.contains('on'))}));
+$('#f-lim').addEventListener('input',e=>$('#f-lim-v').textContent=e.target.value+' min');
+$('#f-go').addEventListener('click',()=>{
+  const n=$('#f-name').value.trim();if(!n){$('#f-err').textContent='Please enter your name to continue.';$('#f-name').focus();return}
+  S.name=n;S.goal=$('#f-goal .on')?.dataset.v||'Focus better';S.limit=+$('#f-lim').value;S.interests=$$('#f-int .on').map(c=>c.dataset.v);
+  save();$('#ob').classList.remove('on');paint();
+});
+(function init(){
+  let saved=null;try{saved=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+  if(saved&&saved.name){S=Object.assign(S,saved);setReminder()}else{$('#ob').classList.add('on')}
+  paint();
+})();
+</script>
+</body>
+</html>
